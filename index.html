@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello</title>
+
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="/game/box2dweb/physics.js"></script>
+	<script src="/lib/Class.js"></script>
+	<script src="/lib/NetworkAdapter.js"></script>
+	<script src="/lib/Angles.js"></script>
+	<script src="/lib/Snapshot.js"></script>
+	<script src="/lib/InputEngine.js"></script>
+	<script src="/lib/GameEngine.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.min.js"></script>
+	<style type="text/css">
+		.entity{
+			position: absolute;
+			width: 22px;
+			height: 40px;
+			margin-left: -11px;
+			margin-top: -20px;
+			border: 1px red solid;
+		}
+		.debug-text{
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			font-size: 18px;
+			color: red;
+			background: #000;
+			z-index: 1000;
+			padding: 8px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div class="debug-text"></div>
+    <canvas id="canvas"></canvas>
+	<script>
+		/*
+		var socket = io('http://94.62.235.12:8080');
+		socket.on('connected', function(data){
+			setTimeout(function(){
+				socket.emit('join', data);
+			}, 100);
+		});
+		*/
+		Angles.SCALE = 2*Math.PI;
+		var players = {};
+
+		var game = new GameEngine({
+			client: io,
+			show_ghosts: true,
+			client_smoothing: true
+		});
+
+
+		//setup debug draw
+		var debugDraw = new b2DebugDraw();
+		debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+		debugDraw.SetDrawScale(game.scene.scale);
+		debugDraw.SetFillAlpha(0.3);
+		debugDraw.SetLineThickness(1);
+		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit | b2DebugDraw.e_aabbBit | b2DebugDraw.e_pairBit | b2DebugDraw.e_centerOfMassBit);
+		game.world.SetDebugDraw(debugDraw);
+
+		var sizeCanvas = function(){
+    		var width = $(window).width() - 1;
+    		var height = $(window).height() - 6;
+            $('canvas').width(width).height(height).attr("width", width).attr("height", height);
+    	}
+
+		// shim layer with setTimeout fallback
+		window.requestAnimFrame = (function(){
+			return  window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame   ||
+			window.mozRequestAnimationFrame      ||
+			function( callback ){
+				window.setTimeout(callback, 1000 / 60);
+			};
+		})();
+
+		function animloop(){
+			requestAnimFrame(animloop);
+			game.update();
+		}
+
+    	$(document).ready(function(){
+    		sizeCanvas();
+			requestAnimFrame(animloop);
+    	});
+    	$(window).resize(sizeCanvas);
+
+	</script>
+</body>	
+</html>

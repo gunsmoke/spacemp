@@ -1,0 +1,18 @@
+version: '2'
+services:
+  server:
+    build:
+      context: ./build/server
+      dockerfile: Dockerfile
+    ports:
+     - "8080:8080"
+    volumes:
+     - .:/code
+  client:
+    build:
+      context: ./build/client
+      dockerfile: Dockerfile
+    ports:
+     - "8000:8000"
+    volumes:
+     - .:/code

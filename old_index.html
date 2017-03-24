@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<style type="text/css">
+	.client{
+		float:left;
+		border: 0px;
+		border-left: 1px #CCC solid;
+		border-bottom: 1px #CCC solid;
+	}
+</style>
+</head>
+<body>
+
+<script type="text/javascript">
+	var clients = 50;
+	var width = 100;
+	var created_clts = 0;
+	var createClient = function(){
+		$client = $('<iframe src="http://localhost:8080/?app=1" width="'+width+'" height="48" class="client"></iframe>');
+		$("body").append($client);
+
+		if(created_clts<clients){
+			setTimeout(createClient, 200);
+		}
+
+		created_clts++;
+	};
+
+	createClient();
+</script>
+</body>
+</html>
